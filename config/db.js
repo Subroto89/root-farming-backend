@@ -2,7 +2,7 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
 
-const uri = process.env.MONGO_URL;
+const uri = process.env.MONGODB_URL;
 
 const client = new MongoClient(uri, {
     serverApi: {
@@ -11,5 +11,15 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+async function connectDB() {
+    try {
+        // await client.connect();
+        // console.log('Connected to MongoDB');
+        return client.db('rootFarmingDB');
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        process.exit(1);
+    }
+}
 
-module.exports = client;
+module.exports = { connectDB };
