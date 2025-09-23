@@ -19,4 +19,23 @@ app.use(cors({
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true })); // for form-encoded (not multipart)
 
-module.exports = { app, port, connectDB };
+async function startServer() {
+  const db = await connectDB();
+
+    app.get('/', (req, res) => {
+    res.send('Server is live');
+  });
+
+
+  if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.listen(port, () => {
+      console.log(`Server running at http://localhost:${port}`);
+    });
+  }
+
+}
+
+
+startServer();
+// ✅ Export handler for Vercel
+module.exports = app;
