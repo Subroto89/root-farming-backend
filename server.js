@@ -49,7 +49,7 @@ const client = new MongoClient(mongoUri, {
 // ---------------------------------------------------------------------------------------------------
 
 async function run() {
-  // Database Creation and Collections Creation----------------------------------------------------
+  // Database Collections Creation----------------------------------------------------
 
 
 
