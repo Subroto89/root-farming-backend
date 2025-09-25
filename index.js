@@ -6,6 +6,7 @@ import activityRoutes from "./routes/activityRoutes.js";
 import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import productsRoutes from "./routes/productsRoutes.js";
+import resourceRoutes from "./routes/resourceRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,25 +26,29 @@ app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 const startServer = async () => {
-  // Initialize MongoDB connection (lazy connection is fine)
-  await connectDB();
 
-  // Use routes
-  app.use("/users", userRoutes);
-  app.use("/products", productsRoutes);
-  app.use("/activities", activityRoutes);
+   // Initialize MongoDB connection (lazy connection is fine)
+   await connectDB();
 
-  // Health check route
-  app.get("/", (req, res) => {
-    res.send("Server is live and connected to MongoDB!");
-  });
+   // Use routes
+   app.use("/users", userRoutes);
+   app.use("/products", productsRoutes);
+   app.use("/resources", resourceRoutes);
+   app.use("/activities", activityRoutes);
 
-  // Only listen locally if not deployed on Vercel
-  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
-    app.listen(port, () => {
-      console.log(`Server running at http://localhost:${port}`);
-    });
-  }
+   // Health check route
+   app.get("/", (req, res) => {
+      res.send("Server is live and connected to MongoDB!");
+   });
+
+   // Only listen locally if not deployed on Vercel
+   if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+      app.listen(port, () => {
+         console.log(`Server running at http://localhost:${port}`);
+      });
+   }
+
+ 
 };
 
 // Start server

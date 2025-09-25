@@ -1,13 +1,16 @@
 import express from "express";
+import { ObjectId } from "mongodb";
 import { getCollection } from "../config/db.js";
 
 const router = express.Router();
 
 // GET All Users
 router.get("/", async (req, res) => {
+   const _id = req.query._id;
+
    try {
       const userCollection = await getCollection("users");
-      const users = await userCollection.find({}).toArray();
+      const users = await userCollection.findOne({ _id: new ObjectId(_id) });
       res.status(200).json(users);
    } catch (error) {
       console.error(error);
