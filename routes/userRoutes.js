@@ -3,7 +3,7 @@ import { getCollection } from "../config/db.js";
 
 const router = express.Router();
 
-// GET all users
+// GET All Users
 router.get("/", async (req, res) => {
    try {
       const userCollection = await getCollection("users");
