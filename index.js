@@ -5,6 +5,8 @@ import "dotenv/config";
 import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import productsRoutes from "./routes/productsRoutes.js";
+import fieldsRoutes from "./routes/fieldsRoutes.js";
+import dailyToDoRoutes from "./routes/dailyToDoRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -30,6 +32,8 @@ const startServer = async () => {
    // Use routes
    app.use("/users", userRoutes);
    app.use("/products", productsRoutes);
+   app.use("/fields", fieldsRoutes);
+   app.use("/tasks", fieldsRoutes);
 
    // Health check route
    app.get("/", (req, res) => {
