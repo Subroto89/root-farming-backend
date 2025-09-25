@@ -10,6 +10,8 @@ router.get("/all-products", async (req, res) => {
       const products = await productsCollection.find({}).toArray();
       res.status(200).json(products);
    } catch (error) {}
+
+
 });
 
 // get best selling products
