@@ -6,11 +6,10 @@ const router = express.Router();
 
 // GET All Users
 router.get("/", async (req, res) => {
-   const _id = req.query._id;
-
+   
    try {
       const userCollection = await getCollection("users");
-      const users = await userCollection.findOne({ _id: new ObjectId(_id) });
+      const users = await userCollection.find({  }).toArray();
       res.status(200).json(users);
    } catch (error) {
       console.error(error);
@@ -19,24 +18,43 @@ router.get("/", async (req, res) => {
 });
 
 // POST - Add a new user
-router.post("/", async (req, res) => {
-   try {
-      const userCollection = await getCollection("users");
+router.post("/save-user", async (req, res) => {
+
+      try {
       const userData = req.body;
+      const query = { userEmail: userData?.userEmail };
+      const usersCollection = await getCollection("users");
 
-      if (!userData || Object.keys(userData).length === 0) {
-         return res.status(400).json({ error: "Invalid user data" });
+      
+        const alreadyUserExist = await usersCollection.findOne(query);
+        if (alreadyUserExist) {
+          await usersCollection.updateOne(query, {
+            $set: { lastLoggedIn: new Date().toISOString() },
+          });
+          return res.status(200).send({ message: "User login time updated." });
+        }
+
+        userData.status =
+          userData?.userRole === "customer" ? "Customer" : `Request for ${userData.userRole} account`;
+        userData.userRole = "Customer";
+        userData.createdAt = new Date().toISOString();
+        userData.lastLoggedIn = new Date().toISOString();
+        const result = await usersCollection.insertOne(userData);
+        return res.status(201).send({ 
+            message: "User created successfully.", 
+            insertedId: result.insertedId 
+        })
+      } catch (err) {
+        console.log(err);
+        res
+          .status(500)
+          .send({ error: "Server error. Please try again later." });
       }
-
-      const result = await userCollection.insertOne(userData);
-      res.status(201).json({
-         message: "User added successfully",
-         id: result.insertedId,
-      });
-   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to add user" });
-   }
-});
+    });
 
 export default router;
+
+
+
+
+   
