@@ -17,10 +17,10 @@ const port = process.env.PORT || 3000;
 // CORS config
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: ["http://localhost:5173", "https://elegant-buttercream-cd3400.netlify.app"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+      allowedHeaders: ["Content-Type", "Authorization", "x-custom-header"],
   })
 );
 
@@ -41,10 +41,9 @@ const startServer = async () => {
    app.use("/resources", resourceRoutes);
    app.use("/activities", activityRoutes);
 
-
    // Health check route
    app.get("/", (req, res) => {
-      res.send("Server is live and connected to MongoDB!");
+      res.send("Root Farming Is Alive!");
    });
 
    // Only listen locally if not deployed on Vercel
@@ -53,8 +52,6 @@ const startServer = async () => {
          console.log(`Server running at http://localhost:${port}`);
       });
    }
-
- 
 };
 
 // Start server

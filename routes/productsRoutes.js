@@ -11,7 +11,6 @@ router.get("/all-products", async (req, res) => {
       res.status(200).json(products);
    } catch (error) {}
 
-
 });
 
 // get best selling products
