@@ -9,6 +9,9 @@ import productsRoutes from "./routes/productsRoutes.js";
 import fieldsRoutes from "./routes/fieldsRoutes.js";
 import dailyToDoRoutes from "./routes/dailyToDoRoutes.js";
 import resourceRoutes from "./routes/resourceRoutes.js";
+import starNewCropRoutes from "./routes/startNewCropRoutes.js";
+import managementGuideRoutes from "./routes/managementGuideRoutes.js";
+
 
 
 const app = express();
@@ -17,7 +20,7 @@ const port = process.env.PORT || 3000;
 // CORS config
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://elegant-buttercream-cd3400.netlify.app"],
+    origin:["http://localhost:5173", "https://elegant-buttercream-cd3400.netlify.app"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization", "x-custom-header"],
@@ -40,6 +43,8 @@ const startServer = async () => {
    app.use("/tasks", dailyToDoRoutes);
    app.use("/resources", resourceRoutes);
    app.use("/activities", activityRoutes);
+   app.use("/crops", starNewCropRoutes);
+    app.use("/api/guides", managementGuideRoutes);
 
    // Health check route
    app.get("/", (req, res) => {
