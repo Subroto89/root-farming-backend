@@ -9,7 +9,7 @@ import productsRoutes from "./routes/productsRoutes.js";
 import fieldsRoutes from "./routes/fieldsRoutes.js";
 import dailyToDoRoutes from "./routes/dailyToDoRoutes.js";
 import resourceRoutes from "./routes/resourceRoutes.js";
-import newCropRoutes from "./routes/productsRoutes";
+import newCropRoutes from "./routes/newcropRoutes.js";
 
 
 const app = express();
