@@ -9,7 +9,8 @@ import productsRoutes from "./routes/productsRoutes.js";
 import fieldsRoutes from "./routes/fieldsRoutes.js";
 import dailyToDoRoutes from "./routes/dailyToDoRoutes.js";
 import resourceRoutes from "./routes/resourceRoutes.js";
-import newCropRoutes from "./routes/newcropRoutes.js";
+import starNewCropRoutes from "./routes/startNewCropRoutes.js";
+
 
 
 const app = express();
@@ -41,7 +42,7 @@ const startServer = async () => {
    app.use("/tasks", dailyToDoRoutes);
    app.use("/resources", resourceRoutes);
    app.use("/activities", activityRoutes);
-   app.use("/crops", newCropRoutes);
+   app.use("/crops", starNewCropRoutes);
 
    // Health check route
    app.get("/", (req, res) => {
