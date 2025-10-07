@@ -2,13 +2,13 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import activityRoutes from "./routes/activityRoutes.js";
-
 import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import productsRoutes from "./routes/productsRoutes.js";
 import fieldsRoutes from "./routes/fieldsRoutes.js";
 import dailyToDoRoutes from "./routes/dailyToDoRoutes.js";
 import resourceRoutes from "./routes/resourceRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 
 
 const app = express();
@@ -40,6 +40,7 @@ const startServer = async () => {
    app.use("/tasks", dailyToDoRoutes);
    app.use("/resources", resourceRoutes);
    app.use("/activities", activityRoutes);
+   app.use("/categories", categoryRoutes);
 
    // Health check route
    app.get("/", (req, res) => {
