@@ -68,8 +68,6 @@ router.get("/get-farmers", async (req, res) => {
 });
 
 
-
-
 router.get("/get-users-by-type", async (req, res) => {
     try {
         const userType = req.query.type;
