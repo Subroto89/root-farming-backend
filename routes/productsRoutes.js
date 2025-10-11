@@ -3,6 +3,19 @@ import { getCollection } from "../config/db.js";
 
 const router = express.Router();
 
+
+// Add Product API ----------------------------------------------
+router.post("/add-product", async (req, res) => {
+   try{
+      const productsCollection = await getCollection("products");
+      const product = req.body;
+      console.log(product)
+   }
+   catch(error){
+
+   }
+})
+
 // GET all products
 router.get("/all-products", async (req, res) => {
    try {

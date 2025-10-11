@@ -164,4 +164,29 @@ router.patch("/update-role/:email", async (req, res) => {
   }
 });
 
-export default router;
+
+
+// API for Getting User Role by Email ------------------------------------------------
+ router.get("/get-user-role/:email", async (req, res) => {
+      try {
+        const email = req.params.email;
+        if (!email) {
+          return res.status(400).send({ message: "email is required" });
+        }
+        const userCollection = await getCollection("users");
+        const user = await userCollection.findOne({ userEmail: email });
+
+        if (!user) {
+          return res.status(404).send({ message: "user not found!" });
+        }
+
+        res.send({ role: user.userRole });
+      } catch (error) {
+        console.error("Error getting user role:", error);
+        res.status(500).send({ message: "Failed to get role" });
+      }
+    });
+
+
+
+    export default router;
