@@ -8,11 +8,27 @@ const router = express.Router();
 router.post("/add-product", async (req, res) => {
    try{
       const productsCollection = await getCollection("products");
-      const product = req.body;
-      console.log(product)
+      const productData = req.body;
+      
+      // Add Aditional Info with the Received Data --------------------
+      productData.rating = 0;
+      productData.reviewCount = 0;
+      productData.soldAmount = 0;
+      productData.quantity = 0;
+      productData.createdAt = new Date().toISOString();
+      productData.updatedAt = new Date().toISOString();
+      productData.productStatus = 'Out of stock'; 
+      productData.accountStatus = "inactive";
+      productData.isApproved = false;
+
+      console.log(productData)
+
+      // Save into Products Collection -------------------------------
+      const data = await productsCollection.insertOne(productData);
+      res.status(201).send(data);
    }
    catch(error){
-
+      res.status(400).send("Product Insertion Failed Due to Server Error!")
    }
 })
 
