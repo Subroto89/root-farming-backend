@@ -26,6 +26,7 @@ import blogRoutes from "./routes/blogRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import typeRoutes from "./routes/typeRoutes.js";
 import subCategoryRoutes from "./routes/subCategoryRoutes.js";
+import variantRoutes from "./routes/variantRoutes.js";
 
 
 // chat related....
@@ -73,6 +74,7 @@ app.use("/api/chat", chatRoutes);
   app.use("/categories", categoryRoutes);
   app.use("/types", typeRoutes);
   app.use("/subCategories", subCategoryRoutes);
+  app.use("/variants", variantRoutes);
 
 // Create HTTP server and attach socket.io
 const server = http.createServer(app);

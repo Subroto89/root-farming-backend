@@ -96,4 +96,20 @@ router.get("/get-types", async (req, res) => {
     });
 
 
+    // Delete Type API
+    router.delete("/delete-type/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const query = { _id: new ObjectId(id) };
+        const typeCollection = await getCollection("types");
+        const result = await typeCollection.deleteOne(query);
+        res.status(200).send(result);
+      } catch (error) {
+        console.log(error);
+        res
+          .status(500)
+          .send({ message: "Internal Server Error. Please try again later." });
+      }
+    });
+
 export default router;

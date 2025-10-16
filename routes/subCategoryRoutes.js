@@ -95,4 +95,21 @@ router.patch("/update-subCategories/:id", async (req, res) => {
       }
     });
 
+
+    // Delete Sub-category API
+    router.delete("/delete-subCategory/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const query = { _id: new ObjectId(id) };
+        const subCategoryCollection = await getCollection("subCategories");
+        const result = await subCategoryCollection.deleteOne(query);
+        res.status(200).send(result);
+      } catch (error) {
+        console.log(error);
+        res
+          .status(500)
+          .send({ message: "Internal Server Error. Please try again later." });
+      }
+    });
+
 export default router;

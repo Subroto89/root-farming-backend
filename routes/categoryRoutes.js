@@ -25,12 +25,10 @@ router.post("/save-category", async (req, res) => {
     categoryData.productCount = 0;
 
     const result = await categoryCollection.insertOne(categoryData);
-    return res
-      .status(201)
-      .json({
-        message: "Category created successfully",
-        insertedId: result.insertedId,
-      });
+    return res.status(201).json({
+      message: "Category created successfully",
+      insertedId: result.insertedId,
+    });
   } catch (error) {
     console.error("Error saving category:", error);
     res.status(500).json({ error: "Failed to save category" });
@@ -50,70 +48,49 @@ router.get("/get-categories", async (req, res) => {
   }
 });
 
+// Update Category API
+router.patch("/update-category/:id", async (req, res) => {
+  const categoryId = req.params.id;
+  console.log(categoryId);
 
+  const { categoryName, categoryImage, categoryStatus } = req.body;
 
- router.patch("/update-category/:id", async (req, res) => {
-      const categoryId = req.params.id;
-      console.log(categoryId)
+  const updateFields = {};
+  if (categoryName !== undefined) {
+    updateFields.categoryName = categoryName;
+  }
+  if (categoryImage !== undefined) {
+    updateFields.categoryPhoto = categoryImage;
+  }
+  if (categoryStatus !== undefined) {
+    const allowedStatuses = ["active", "inactive"];
+    if (!allowedStatuses.includes(categoryStatus)) {
+      return res.status(400).json({
+        message: `Invalid status value. Must be one of: ${allowedStatuses.join(
+          ", "
+        )}`,
+      });
+    }
+    updateFields.status = categoryStatus;
+  }
 
-      const { categoryName, categoryImage, categoryStatus } = req.body;
+  updateFields.updatedAt = new Date().toISOString();
 
-      const updateFields = {};
-      if (categoryName !== undefined) {
-        updateFields.categoryName = categoryName;
-      }
-      if (categoryImage !== undefined) {
-        updateFields.categoryPhoto = categoryImage;
-      }
-      if (categoryStatus !== undefined) {
-        const allowedStatuses = ["active", "inactive"];
-        if (!allowedStatuses.includes(categoryStatus)) {
-          return res.status(400).json({
-            message: `Invalid status value. Must be one of: ${allowedStatuses.join(
-              ", "
-            )}`,
-          });
-        }
-        updateFields.status = categoryStatus;
-      }
-
-      updateFields.updatedAt = new Date().toISOString();
-
-      try {
-        const categoryCollection = await getCollection("categories");
-        const result = await categoryCollection.updateOne(
-          { _id: new ObjectId(categoryId) },
-          { $set: updateFields }
-        );
-        res.send(result);
-      } catch (error) {
-        console.error("Error updating category:", error);
-        res.status(500).json({
-          message: "Server error during category update.",
-          error: error.message,
-        });
-      }
+  try {
+    const categoryCollection = await getCollection("categories");
+    const result = await categoryCollection.updateOne(
+      { _id: new ObjectId(categoryId) },
+      { $set: updateFields }
+    );
+    res.send(result);
+  } catch (error) {
+    console.error("Error updating category:", error);
+    res.status(500).json({
+      message: "Server error during category update.",
+      error: error.message,
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  }
+});
 
 router.delete("/delete-category/:id", async (req, res) => {
   try {
