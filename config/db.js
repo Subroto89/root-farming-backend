@@ -5,10 +5,9 @@ const uri = process.env.MONGODB_URI;
 
 // Safety check
 if (!uri) {
-   console.error("Error: MONGODB_URI is not defined in .env");
+   throw new Error("MONGO_URI is not defined in environment variables");
    process.exit(1);
 }
-
 const client = new MongoClient(uri, {
    serverApi: {
       version: ServerApiVersion.v1,
