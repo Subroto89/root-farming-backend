@@ -2,15 +2,17 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import activityRoutes from './routes/activityRoutes.js';
-
 import { connectDB } from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import productsRoutes from './routes/productsRoutes.js';
 import fieldsRoutes from './routes/fieldsRoutes.js';
 import dailyToDoRoutes from './routes/dailyToDoRoutes.js';
 import resourceRoutes from './routes/resourceRoutes.js';
+import starNewCropRoutes from './routes/startNewCropRoutes.js';
+import managementGuideRoutes from './routes/managementGuideRoutes.js';
 import govtNewsRoutes from './routes/govtNewsRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 
@@ -39,6 +41,7 @@ const startServer = async () => {
   await connectDB();
 
   // Use routes
+
   app.use('/users', userRoutes);
   app.use('/products', productsRoutes);
   app.use('/fields', fieldsRoutes);
@@ -47,6 +50,9 @@ const startServer = async () => {
   app.use('/activities', activityRoutes);
   app.use('/govt-news', govtNewsRoutes);
   app.use('/blogs', blogRoutes);
+  app.use('/crops', starNewCropRoutes);
+  app.use('/api/guides', managementGuideRoutes);
+  app.use('/categories', categoryRoutes);
   app.use('/reviews', reviewRoutes);
   app.use('/wishlist', wishlistRoutes);
 
