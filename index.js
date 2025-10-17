@@ -11,6 +11,8 @@ import dailyToDoRoutes from './routes/dailyToDoRoutes.js';
 import resourceRoutes from './routes/resourceRoutes.js';
 import govtNewsRoutes from './routes/govtNewsRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -45,6 +47,8 @@ const startServer = async () => {
   app.use('/activities', activityRoutes);
   app.use('/govt-news', govtNewsRoutes);
   app.use('/blogs', blogRoutes);
+  app.use('/reviews', reviewRoutes);
+  app.use('/wishlist', wishlistRoutes);
 
   // Health check route
   app.get('/', (req, res) => {
