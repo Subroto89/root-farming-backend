@@ -37,9 +37,7 @@ router.post("/save-type", async (req, res) => {
   }
 });
 
-
 // GET All Types Route
-
 router.get("/get-types", async (req, res) => {
   try {
     const typeCollection = await getCollection("types");
@@ -51,65 +49,63 @@ router.get("/get-types", async (req, res) => {
   }
 });
 
+router.patch("/update-type/:id", async (req, res) => {
+  const typeId = req.params.id;
+  console.log(typeId);
 
- router.patch("/update-type/:id", async (req, res) => {
-      const typeId = req.params.id;
-      console.log(typeId)
+  const { typeName, typeImage, typeStatus } = req.body;
 
-      const { typeName, typeImage, typeStatus } = req.body;
+  const updateFields = {};
+  if (typeName !== undefined) {
+    updateFields.typeName = typeName;
+  }
+  if (typeImage !== undefined) {
+    updateFields.typePhoto = typeImage;
+  }
+  if (typeStatus !== undefined) {
+    const allowedStatuses = ["active", "inactive"];
+    if (!allowedStatuses.includes(typeStatus)) {
+      return res.status(400).json({
+        message: `Invalid status value. Must be one of: ${allowedStatuses.join(
+          ", "
+        )}`,
+      });
+    }
+    updateFields.status = typeStatus;
+  }
 
-      const updateFields = {};
-      if (typeName !== undefined) {
-        updateFields.typeName = typeName;
-      }
-      if (typeImage !== undefined) {
-        updateFields.typePhoto = typeImage;
-      }
-      if (typeStatus !== undefined) {
-        const allowedStatuses = ["active", "inactive"];
-        if (!allowedStatuses.includes(typeStatus)) {
-          return res.status(400).json({
-            message: `Invalid status value. Must be one of: ${allowedStatuses.join(
-              ", "
-            )}`,
-          });
-        }
-        updateFields.status = typeStatus;
-      }
+  updateFields.updatedAt = new Date().toISOString();
 
-      updateFields.updatedAt = new Date().toISOString();
-
-      try {
-        const typeCollection = await getCollection("types");
-        const result = await typeCollection.updateOne(
-          { _id: new ObjectId(typeId) },
-          { $set: updateFields }
-        );
-        res.send(result);
-      } catch (error) {
-        console.error("Error updating type:", error);
-        res.status(500).json({
-          message: "Server error during type update.",
-          error: error.message,
-        });
-      }
+  try {
+    const typeCollection = await getCollection("types");
+    const result = await typeCollection.updateOne(
+      { _id: new ObjectId(typeId) },
+      { $set: updateFields }
+    );
+    res.send(result);
+  } catch (error) {
+    console.error("Error updating type:", error);
+    res.status(500).json({
+      message: "Server error during type update.",
+      error: error.message,
     });
+  }
+});
 
-
-    // Delete Type API
-    router.delete("/delete-type/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
-        const query = { _id: new ObjectId(id) };
-        const typeCollection = await getCollection("types");
-        const result = await typeCollection.deleteOne(query);
-        res.status(200).send(result);
-      } catch (error) {
-        console.log(error);
-        res
-          .status(500)
-          .send({ message: "Internal Server Error. Please try again later." });
-      }
-    });
+// Delete Type API
+router.delete("/delete-type/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = { _id: new ObjectId(id) };
+    const typeCollection = await getCollection("types");
+    const result = await typeCollection.deleteOne(query);
+    res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ message: "Internal Server Error. Please try again later." });
+  }
+});
 
 export default router;

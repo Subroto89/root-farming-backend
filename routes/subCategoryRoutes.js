@@ -10,8 +10,6 @@ router.post("/save-subcategory", async (req, res) => {
     const subCategoryData = req.body;
     const subCategoryCollection = await getCollection("subCategories");
 
-    
-
     // Check if category already exists
     const existingSubCategory = await subCategoryCollection.findOne({
       name: subCategoryData.subCategoryName,
@@ -37,9 +35,7 @@ router.post("/save-subcategory", async (req, res) => {
   }
 });
 
-
 // GET All Sub-Categories Route
-
 router.get("/get-subCategories", async (req, res) => {
   try {
     const subCategoryCollection = await getCollection("subCategories");
@@ -53,63 +49,61 @@ router.get("/get-subCategories", async (req, res) => {
 
 // Update Sub-Category Route
 router.patch("/update-subCategories/:id", async (req, res) => {
-      const subCategoryId = req.params.id;
-      
+  const subCategoryId = req.params.id;
 
-      const { subCategoryName, subCategoryPhoto, subCategoryStatus } = req.body;
+  const { subCategoryName, subCategoryPhoto, subCategoryStatus } = req.body;
 
-      const updateFields = {};
-      if (subCategoryName !== undefined) {
-        updateFields.subCategoryName = subCategoryName;
-      }
-      if (subCategoryPhoto !== undefined) {
-        updateFields.subCategoryPhoto = subCategoryPhoto;
-      }
-      if (subCategoryStatus !== undefined) {
-        const allowedStatuses = ["active", "inactive"];
-        if (!allowedStatuses.includes(subCategoryStatus)) {
-          return res.status(400).json({
-            message: `Invalid status value. Must be one of: ${allowedStatuses.join(
-              ", "
-            )}`,
-          });
-        }
-        updateFields.subCategoryStatus = subCategoryStatus;
-      }
+  const updateFields = {};
+  if (subCategoryName !== undefined) {
+    updateFields.subCategoryName = subCategoryName;
+  }
+  if (subCategoryPhoto !== undefined) {
+    updateFields.subCategoryPhoto = subCategoryPhoto;
+  }
+  if (subCategoryStatus !== undefined) {
+    const allowedStatuses = ["active", "inactive"];
+    if (!allowedStatuses.includes(subCategoryStatus)) {
+      return res.status(400).json({
+        message: `Invalid status value. Must be one of: ${allowedStatuses.join(
+          ", "
+        )}`,
+      });
+    }
+    updateFields.subCategoryStatus = subCategoryStatus;
+  }
 
-      updateFields.updatedAt = new Date().toISOString();
+  updateFields.updatedAt = new Date().toISOString();
 
-      try {
-        const subCategoryCollection = await getCollection("subCategories");
-        const result = await subCategoryCollection.updateOne(
-          { _id: new ObjectId(subCategoryId) },
-          { $set: updateFields }
-        );
-        res.send(result);
-      } catch (error) {
-        console.error("Error updating type:", error);
-        res.status(500).json({
-          message: "Server error during type update.",
-          error: error.message,
-        });
-      }
+  try {
+    const subCategoryCollection = await getCollection("subCategories");
+    const result = await subCategoryCollection.updateOne(
+      { _id: new ObjectId(subCategoryId) },
+      { $set: updateFields }
+    );
+    res.send(result);
+  } catch (error) {
+    console.error("Error updating type:", error);
+    res.status(500).json({
+      message: "Server error during type update.",
+      error: error.message,
     });
+  }
+});
 
-
-    // Delete Sub-category API
-    router.delete("/delete-subCategory/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
-        const query = { _id: new ObjectId(id) };
-        const subCategoryCollection = await getCollection("subCategories");
-        const result = await subCategoryCollection.deleteOne(query);
-        res.status(200).send(result);
-      } catch (error) {
-        console.log(error);
-        res
-          .status(500)
-          .send({ message: "Internal Server Error. Please try again later." });
-      }
-    });
+// Delete Sub-category API
+router.delete("/delete-subCategory/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = { _id: new ObjectId(id) };
+    const subCategoryCollection = await getCollection("subCategories");
+    const result = await subCategoryCollection.deleteOne(query);
+    res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ message: "Internal Server Error. Please try again later." });
+  }
+});
 
 export default router;
