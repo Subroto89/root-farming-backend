@@ -35,19 +35,6 @@ import chatRoutes from "./routes/chatRoutes.js"; // add chat routes
 const PORT = process.env.PORT || 3001; // choose 3001 for chat server to avoid frontend port conflicts
 const app = express();
 
-// CORS config
-app.use(
-  cors({
-    origin: [
-      'http://localhost:5173',
-      'https://elegant-buttercream-cd3400.netlify.app',
-    ],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-custom-header'],
-  })
-);
-
 
 // Body parsers
 app.use(express.json({ limit: '2mb' }));
@@ -58,6 +45,8 @@ app.use(
    cors({
       origin: [
          "http://localhost:5173",
+         "http://localhost:5174",
+         'https://root-farming.web.app',
          "https://elegant-buttercream-cd3400.netlify.app",
       ],
       credentials: true,
