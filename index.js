@@ -1,40 +1,39 @@
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
 
-import express from "express";
-import cors from "cors";
-import "dotenv/config";
-
-import http from "http";
-import { Server } from "socket.io";
+import http from 'http';
+import { Server } from 'socket.io';
 
 // middlewares (HTTP + Socket)
-import { verifySocketAuth } from "./middleware/verifySocketAuth.js";
+import { verifySocketAuth } from './middleware/verifySocketAuth.js';
 
 // chat socket handler
-import registerSocketHandlers from "./socket/chatHandler.js";
-import activityRoutes from "./routes/activityRoutes.js";
-import { connectDB } from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";
-import productsRoutes from "./routes/productsRoutes.js";
-import fieldsRoutes from "./routes/fieldsRoutes.js";
-import dailyToDoRoutes from "./routes/dailyToDoRoutes.js";
-import resourceRoutes from "./routes/resourceRoutes.js";
-import starNewCropRoutes from "./routes/startNewCropRoutes.js";
-import managementGuideRoutes from "./routes/managementGuideRoutes.js";
-import govtNewsRoutes from "./routes/govtNewsRoutes.js";
-import blogRoutes from "./routes/blogRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import typeRoutes from "./routes/typeRoutes.js";
-import subCategoryRoutes from "./routes/subCategoryRoutes.js";
-import variantRoutes from "./routes/variantRoutes.js";
+import registerSocketHandlers from './socket/chatHandler.js';
+import activityRoutes from './routes/activityRoutes.js';
+import { connectDB } from './config/db.js';
+import userRoutes from './routes/userRoutes.js';
+import productsRoutes from './routes/productsRoutes.js';
+import fieldsRoutes from './routes/fieldsRoutes.js';
+import dailyToDoRoutes from './routes/dailyToDoRoutes.js';
+import resourceRoutes from './routes/resourceRoutes.js';
+import starNewCropRoutes from './routes/startNewCropRoutes.js';
+import managementGuideRoutes from './routes/managementGuideRoutes.js';
+import govtNewsRoutes from './routes/govtNewsRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import typeRoutes from './routes/typeRoutes.js';
+import subCategoryRoutes from './routes/subCategoryRoutes.js';
+import variantRoutes from './routes/variantRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import fieldRoutes from './routes/fieldRoutes.js';
 
 // chat related....
-import chatRoutes from "./routes/chatRoutes.js"; // add chat routes
+import chatRoutes from './routes/chatRoutes.js'; // add chat routes
 
 const PORT = process.env.PORT || 3001; // choose 3001 for chat server to avoid frontend port conflicts
 const app = express();
-
 
 // Body parsers
 app.use(express.json({ limit: '2mb' }));
@@ -42,55 +41,55 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS config
 app.use(
-   cors({
-      origin: [
-         "http://localhost:5173",
-         "http://localhost:5174",
-         'https://root-farming.web.app',
-         "https://elegant-buttercream-cd3400.netlify.app",
-      ],
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization", "x-custom-header"],
-   })
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://root-farming.web.app',
+      'https://elegant-buttercream-cd3400.netlify.app',
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-custom-header'],
+  })
 );
 
-
 // Health check route
-app.get("/", (req, res) => {
-   res.send("Root Farming Is Alive!");
+app.get('/', (req, res) => {
+  res.send('Root Farming Is Alive!');
 });
 
 // mount chat routes (protected routes inside will use verifyFirebaseToken)
-app.use("/api/chat", chatRoutes);
-  // Other existing routes
-  app.use("/users", userRoutes);
-  app.use("/products", productsRoutes);
-  app.use("/fields", fieldsRoutes);
-  app.use("/tasks", dailyToDoRoutes);
-  app.use("/resources", resourceRoutes);
-  app.use("/activities", activityRoutes);
-  app.use("/govt-news", govtNewsRoutes);
-  app.use("/blogs", blogRoutes);
-  app.use("/crops", starNewCropRoutes);
-  app.use("/api/guides", managementGuideRoutes);
-  app.use("/categories", categoryRoutes);
+app.use('/api/chat', chatRoutes);
+// Other existing routes
+app.use('/users', userRoutes);
+app.use('/products', productsRoutes);
+app.use('/fields', fieldsRoutes);
+app.use('/tasks', dailyToDoRoutes);
+app.use('/resources', resourceRoutes);
+app.use('/activities', activityRoutes);
+app.use('/govt-news', govtNewsRoutes);
+app.use('/blogs', blogRoutes);
+app.use('/crops', starNewCropRoutes);
+app.use('/api/guides', managementGuideRoutes);
+app.use('/categories', categoryRoutes);
 
-  app.use("/types", typeRoutes);
-  app.use("/subCategories", subCategoryRoutes);
-  app.use("/variants", variantRoutes);
+app.use('/types', typeRoutes);
+app.use('/subCategories', subCategoryRoutes);
+app.use('/variants', variantRoutes);
 
-   app.use('/reviews', reviewRoutes);
-  app.use('/wishlist', wishlistRoutes);
+app.use('/reviews', reviewRoutes);
+app.use('/wishlist', wishlistRoutes);
+app.use('/fields', fieldRoutes);
 
 // Create HTTP server and attach socket.io
 const server = http.createServer(app);
 const io = new Server(server, {
-   cors: {
-      origin: ["http://localhost:5173"],
-      credentials: true,
-      methods: ["GET", "POST"],
-   },
+  cors: {
+    origin: ['http://localhost:5173'],
+    credentials: true,
+    methods: ['GET', 'POST'],
+  },
 });
 
 // Use socket auth middleware (verify token on handshake)
@@ -102,16 +101,15 @@ registerSocketHandlers(io);
 
 // Start server after DB connect
 const startServer = async () => {
-   try {
-      await connectDB();
-      server.listen(PORT, () => {
-         console.log(`Server running at http://localhost:${PORT}`);
-      });
-   } catch (err) {
-      console.error("Failed to start server:", err);
-      process.exit(1);
-   }
- 
+  try {
+    await connectDB();
+    server.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  }
 
   // Health check route
   app.get('/', (req, res) => {
@@ -124,10 +122,8 @@ const startServer = async () => {
       console.log(`Server running at http://localhost:${PORT}`);
     });
   }
-
 };
 
 startServer();
 
 export default app;
-
