@@ -7,7 +7,7 @@ import http from "http";
 import { Server } from "socket.io";
 
 // middlewares (HTTP + Socket)
-import { verifySocketAuth } from './middleware/verifySocketAuth.js';
+import { verifySocketAuth } from "./middleware/verifySocketAuth.js";
 
 // chat socket handler
 import registerSocketHandlers from "./socket/chatHandler.js";
@@ -30,10 +30,10 @@ import subCategoryRoutes from "./routes/subCategoryRoutes.js";
 import variantRoutes from "./routes/variantRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
-import farmerFieldsRoutes from './routes/farmerFieldsRoutes.js';
+import farmerFieldsRoutes from "./routes/farmerFieldsRoutes.js";
 
 // chat related....
-import chatRoutes from './routes/chatRoutes.js'; // add chat routes
+import chatRoutes from "./routes/chatRoutes.js"; // add chat routes
 
 // Initialize Express app
 const PORT = process.env.PORT || 3001; // choose 3001 for chat server to avoid frontend port conflicts
@@ -51,6 +51,7 @@ app.use(
          "http://localhost:5174",
          "https://root-farming.web.app",
          "https://elegant-buttercream-cd3400.netlify.app",
+         "https://root-farming-bb736.web.app",
       ],
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -59,8 +60,8 @@ app.use(
 );
 
 // Health check route
-app.get('/', (req, res) => {
-  res.send('Root Farming Is Alive!');
+app.get("/", (req, res) => {
+   res.send("Root Farming Is Alive!");
 });
 
 // mount chat routes (protected routes inside will use verifyFirebaseToken)
@@ -95,6 +96,7 @@ const io = new Server(server, {
          "http://localhost:5173",
          "http://localhost:5174",
          "https://elegant-buttercream-cd3400.netlify.app",
+         "https://root-farming-bb736.web.app",
       ],
       credentials: true,
       methods: ["GET", "POST"],
