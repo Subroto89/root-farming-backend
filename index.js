@@ -32,7 +32,6 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import farmerFieldsRoutes from './routes/farmerFieldsRoutes.js';
 
-
 // chat related....
 import chatRoutes from './routes/chatRoutes.js'; // add chat routes
 
@@ -80,12 +79,6 @@ app.use("/crops", starNewCropRoutes);
 app.use("/api/guides", managementGuideRoutes);
 app.use("/categories", categoryRoutes);
 
-<<<<<<< HEAD
-   app.use('/reviews', reviewRoutes);
-  app.use('/wishlist', wishlistRoutes);
-  
-  
-=======
 app.use("/types", typeRoutes);
 app.use("/subCategories", subCategoryRoutes);
 app.use("/variants", variantRoutes);
@@ -93,7 +86,6 @@ app.use("/variants", variantRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/wishlist", wishlistRoutes);
 app.use("/farmerfields", farmerFieldsRoutes);
->>>>>>> 263b81a8168b6954dc9e1c5b914e3451f7792cfa
 
 // Create HTTP server and attach socket.io
 const server = http.createServer(app);
