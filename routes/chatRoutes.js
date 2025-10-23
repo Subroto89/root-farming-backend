@@ -1,4 +1,3 @@
-
 import express from "express";
 import { getCollection } from "../config/db.js";
 import { ObjectId } from "mongodb";
@@ -40,5 +39,97 @@ router.get(
    }
 );
 
-export default router;
+// POST /conversations/:id/messages
+router.post(
+   "/conversations/:id/messages",
+   verifyFirebaseTokenMiddleware,
+   async (req, res) => {
+      try {
+         const { id } = req.params;
+         const { text } = req.body;
+         const senderUid = req.user.uid;
 
+         if (!text?.trim()) {
+            return res.status(400).json({ error: "Message text required" });
+         }
+
+         const messagesCol = await getCollection("messages");
+         const conversationsCol = await getCollection("conversations");
+
+         // Create message document
+         const messageDoc = {
+            conversationId: new ObjectId(id),
+            senderUid,
+            text,
+            createdAt: new Date(),
+         };
+
+         const result = await messagesCol.insertOne(messageDoc);
+
+         // Update conversation lastUpdated + ensure it exists
+         await conversationsCol.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { lastUpdated: new Date() } }
+         );
+
+         // Return saved message
+         res.status(201).json({ ...messageDoc, _id: result.insertedId });
+      } catch (err) {
+         console.error("Message save failed:", err);
+         res.status(500).json({ error: "Internal server error" });
+      }
+   }
+);
+
+// in root/routes/chatRoutes.js (add near other routes)
+router.post(
+   "/conversations/start",
+   verifyFirebaseTokenMiddleware,
+   async (req, res) => {
+      try {
+         const senderUid = req.user.uid;
+         const { recipientUid } = req.body;
+         if (!recipientUid) {
+            return res.status(400).json({ error: "recipientUid required" });
+         }
+
+         const conversationsCol = await getCollection("conversations");
+
+         // Sorted participants to avoid duplicates
+         const participants = [senderUid, recipientUid].sort();
+
+         const conv = await conversationsCol.findOneAndUpdate(
+            { participants },
+            {
+               $setOnInsert: {
+                  participants,
+                  lastMessage: "",
+                  lastUpdated: new Date(),
+                  unreadCounts: { [recipientUid]: 0, [senderUid]: 0 },
+               },
+            },
+            { upsert: true, returnDocument: "after" }
+         );
+
+         // conv.value should be the conversation doc
+         if (!conv?.value) {
+            return res
+               .status(500)
+               .json({ error: "Failed to create conversation" });
+         }
+
+         // return conversation (string _id and other fields)
+         const conversation = {
+            ...conv.value,
+            _id: conv.value._id.toString(),
+         };
+
+         res.status(200).json(conversation);
+      } catch (err) {
+         console.error("start conversation error:", err);
+         res.status(500).json({ error: "Server error" });
+      }
+   }
+);
+
+export default router;

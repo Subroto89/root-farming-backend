@@ -33,9 +33,9 @@ router.post("/save-user", async (req, res) => {
 
     userData.status =
       userData?.userRole === "customer"
-        ? "Customer"
+        ? "customer"
         : `Request for ${userData.userRole} account`;
-    userData.userRole = "Customer";
+    userData.userRole = "customer";
     userData.createdAt = new Date().toISOString();
     userData.lastLoggedIn = new Date().toISOString();
     const result = await usersCollection.insertOne(userData);
@@ -180,7 +180,7 @@ router.patch("/update-role/:email", async (req, res) => {
           return res.status(404).send({ message: "user not found!" });
         }
 
-        res.send({ role: user.userRole });
+        res.send({ role: user?.userRole });
       } catch (error) {
         console.error("Error getting user role:", error);
         res.status(500).send({ message: "Failed to get role" });
