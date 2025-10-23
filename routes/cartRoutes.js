@@ -77,6 +77,43 @@ router.get("/get-cart", async (req, res) => {
     console.error("Error fetching cart items:", error.message);
     res.status(500).json({ error: "Failed to fetch cart items" });
   }
+});// ------------------ UPDATE QUANTITY ------------------
+router.patch("/update-cart/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    if (!ObjectId.isValid(id))
+      return res.status(400).json({ error: "Invalid ID" });
+
+    const cartCollection = await getCollection("cart");
+
+    await cartCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { quantity, updatedAt: new Date().toISOString() } }
+    );
+
+    res.status(200).json({ message: "Cart quantity updated" });
+  } catch (error) {
+    console.error("Error updating quantity:", error.message);
+    res.status(500).json({ error: "Failed to update cart quantity" });
+  }
 });
+
+// ------------------ REMOVE ITEM ------------------
+router.delete("/delete-cart/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!ObjectId.isValid(id))
+      return res.status(400).json({ error: "Invalid ID" });
+
+    const cartCollection = await getCollection("cart");
+    const result = await cartCollection.deleteOne({ _id: new ObjectId(id) });
+    res.status(200).json({ message: "Item removed from cart", result });
+  } catch (error) {
+    console.error("Error deleting cart item:", error.message);
+    res.status(500).json({ error: "Failed to remove cart item" });
+  }
+});
+
 
 export default router;
