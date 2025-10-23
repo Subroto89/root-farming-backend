@@ -29,6 +29,7 @@ import variantRoutes from "./routes/variantRoutes.js";
 import wishlistRoutes from './routes/wishlistRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 
+
 // chat related....
 import chatRoutes from "./routes/chatRoutes.js"; // add chat routes
 
@@ -93,6 +94,8 @@ app.use("/api/chat", chatRoutes);
 
    app.use('/reviews', reviewRoutes);
   app.use('/wishlist', wishlistRoutes);
+  
+  
 
 // Create HTTP server and attach socket.io
 const server = http.createServer(app);
