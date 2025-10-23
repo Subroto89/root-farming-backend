@@ -7,7 +7,7 @@ import http from "http";
 import { Server } from "socket.io";
 
 // middlewares (HTTP + Socket)
-import { verifySocketAuth } from "./middleware/verifySocketAuth.js";
+import { verifySocketAuth } from './middleware/verifySocketAuth.js';
 
 // chat socket handler
 import registerSocketHandlers from "./socket/chatHandler.js";
@@ -30,9 +30,10 @@ import subCategoryRoutes from "./routes/subCategoryRoutes.js";
 import variantRoutes from "./routes/variantRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import farmerFieldsRoutes from './routes/farmerFieldsRoutes.js';
 
 // chat related....
-import chatRoutes from "./routes/chatRoutes.js"; // add chat routes
+import chatRoutes from './routes/chatRoutes.js'; // add chat routes
 
 // Initialize Express app
 const PORT = process.env.PORT || 3001; // choose 3001 for chat server to avoid frontend port conflicts
@@ -48,6 +49,7 @@ app.use(
       origin: [
          "http://localhost:5173",
          "http://localhost:5174",
+         "https://root-farming.web.app",
          "https://elegant-buttercream-cd3400.netlify.app",
       ],
       credentials: true,
@@ -57,8 +59,8 @@ app.use(
 );
 
 // Health check route
-app.get("/", (req, res) => {
-   res.send("Root Farming Is Alive!");
+app.get('/', (req, res) => {
+  res.send('Root Farming Is Alive!');
 });
 
 // mount chat routes (protected routes inside will use verifyFirebaseToken)
@@ -83,6 +85,7 @@ app.use("/variants", variantRoutes);
 
 app.use("/reviews", reviewRoutes);
 app.use("/wishlist", wishlistRoutes);
+app.use("/farmerfields", farmerFieldsRoutes);
 
 // Create HTTP server and attach socket.io
 const server = http.createServer(app);
@@ -116,11 +119,6 @@ const startServer = async () => {
       console.error("Failed to start server:", err);
       process.exit(1);
    }
-
-   // Health check route
-   app.get("/", (req, res) => {
-      res.send("Root Farming Is Alive!");
-   });
 
    // Only listen locally if not deployed on Vercel
    if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
