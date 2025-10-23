@@ -63,6 +63,20 @@ router.post("/add-to-cart", async (req, res) => {
   }
 });
 
+// ------------------ GET USER CART ------------------
+router.get("/get-cart", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: "Missing email" });
 
+    const cartCollection = await getCollection("cart");
+    const cartItems = await cartCollection.find({ userEmail: email }).toArray();
+
+    res.status(200).json(cartItems);
+  } catch (error) {
+    console.error("Error fetching cart items:", error.message);
+    res.status(500).json({ error: "Failed to fetch cart items" });
+  }
+});
 
 export default router;
