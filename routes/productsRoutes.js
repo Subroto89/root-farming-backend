@@ -57,6 +57,8 @@ router.get('/categories', async (req, res) => {
 
 });
 
+
+
 // ----------------- GET UNIQUE LOCATIONS -----------------
 router.get('/locations', async (req, res) => {
   try {

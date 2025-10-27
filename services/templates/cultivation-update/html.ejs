@@ -1,0 +1,40 @@
+---
+layout: layouts/base
+---
+
+<h2><%= title %></h2>
+<p><%= message %></p>
+
+<% if (phase) { %>
+  <div class="alert alert-info">
+    <h3>Phase: <%= phase.name %></h3>
+    <p><%= phase.description %></p>
+    
+    <% if (phase.tasks && phase.tasks.length > 0) { %>
+      <h4>Key Tasks:</h4>
+      <ul>
+        <% phase.tasks.forEach(function(task) { %>
+          <li><%= task.name %></li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+<% } %>
+
+<% if (metadata) { %>
+  <div class="alert alert-info">
+    <% if (metadata.cropName) { %>
+      <p><strong>Crop:</strong> <%= metadata.cropName %></p>
+    <% } %>
+    <% if (metadata.startDate) { %>
+      <p><strong>Start Date:</strong> <%= new Date(metadata.startDate).toLocaleDateString() %></p>
+    <% } %>
+    <% if (metadata.duration) { %>
+      <p><strong>Duration:</strong> <%= metadata.duration %> days</p>
+    <% } %>
+  </div>
+<% } %>
+
+<a href="<%= appUrl %>/dashboard/cultivations/<%= cultivationId %>" class="button">
+  View Cultivation Details
+</a>
