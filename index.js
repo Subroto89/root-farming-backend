@@ -36,7 +36,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import farmerFieldsRoutes from './routes/farmerFieldsRoutes.js';
 import becomePartners from "./routes/becomePartners.js"
 
-import becomePartners from "./routes/becomePartners.js"
+
 
 
 
