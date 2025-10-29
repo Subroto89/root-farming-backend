@@ -6,6 +6,9 @@ import "dotenv/config";
 import http from "http";
 import { Server } from "socket.io";
 
+// For AI Integration
+// import { GoogleGenAI } from '@google/genai';
+
 // middlewares (HTTP + Socket)
 import { verifySocketAuth } from './middleware/verifySocketAuth.js';
 
@@ -31,6 +34,7 @@ import variantRoutes from "./routes/variantRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import farmerFieldsRoutes from './routes/farmerFieldsRoutes.js';
+import becomePartners from "./routes/becomePartners.js"
 
 import becomePartners from "./routes/becomePartners.js"
 
@@ -63,6 +67,10 @@ app.use(
       allowedHeaders: ["Content-Type", "Authorization", "x-custom-header"],
    })
 );
+
+
+// AI-Initialize the Gemini client using the key from .env
+// const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // Health check route
 app.get('/', (req, res) => {

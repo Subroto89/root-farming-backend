@@ -1,0 +1,30 @@
+---
+layout: layouts/base
+---
+
+<h2><%= title %></h2>
+<p><%= message %></p>
+
+<% if (type === 'task_due') { %>
+  <div class="alert alert-warning">
+    This task is due today! Please make sure to complete it on time.
+  </div>
+<% } %>
+
+<% if (metadata) { %>
+  <div class="alert alert-info">
+    <% if (metadata.priority) { %>
+      <p><strong>Priority:</strong> <%= metadata.priority %></p>
+    <% } %>
+    <% if (metadata.dueDate) { %>
+      <p><strong>Due Date:</strong> <%= new Date(metadata.dueDate).toLocaleDateString() %></p>
+    <% } %>
+    <% if (metadata.taskType) { %>
+      <p><strong>Type:</strong> <%= metadata.taskType %></p>
+    <% } %>
+  </div>
+<% } %>
+
+<a href="<%= appUrl %>/dashboard/tasks/<%= taskId %>" class="button">
+  View Task Details
+</a>
