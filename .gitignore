@@ -6,3 +6,4 @@ dist/
 package-lock.json
 serviceAccountKey.json
 .DS_Store
+vercel.json

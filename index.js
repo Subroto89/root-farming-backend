@@ -32,8 +32,13 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import farmerFieldsRoutes from './routes/farmerFieldsRoutes.js';
 
+
 // chat related....
 import chatRoutes from './routes/chatRoutes.js'; // add chat routes
+import productsManageRoutes from './routes/productsManageRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import managePaymentSettingRoutes from './routes/managePaymentSettingRoutes.js';
+
 
 // Initialize Express app
 const PORT = process.env.PORT || 3001; // choose 3001 for chat server to avoid frontend port conflicts
@@ -86,6 +91,9 @@ app.use("/variants", variantRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/wishlist", wishlistRoutes);
 app.use("/farmerfields", farmerFieldsRoutes);
+app.use("/manage", productsManageRoutes);
+app.use("/cart", cartRoutes);
+app.use("/payment-setting", managePaymentSettingRoutes);
 
 // Create HTTP server and attach socket.io
 const server = http.createServer(app);

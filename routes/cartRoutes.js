@@ -114,21 +114,7 @@ router.delete("/delete-cart/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to remove cart item" });
   }
 });
-// ------------------ REMOVE ITEM ------------------
-router.delete("/delete-cart/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!ObjectId.isValid(id))
-      return res.status(400).json({ error: "Invalid ID" });
 
-    const cartCollection = await getCollection("cart");
-    const result = await cartCollection.deleteOne({ _id: new ObjectId(id) });
-    res.status(200).json({ message: "Item removed from cart", result });
-  } catch (error) {
-    console.error("Error deleting cart item:", error.message);
-    res.status(500).json({ error: "Failed to remove cart item" });
-  }
-});
 
 
 export default router;

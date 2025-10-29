@@ -188,5 +188,176 @@ router.patch("/update-role/:email", async (req, res) => {
     });
 
 
+    router.get("/get-user-profile/:email", async (req, res) => {
+      try {
+        const userEmailParam = req.params.email;
+        // const authenticatedUserEmail = req.tokenEmail;
 
-    export default router;
+        // if (userEmailParam !== authenticatedUserEmail) {
+        //   return res.status(403).send({
+        //     message: "Forbidden: You can only view your own profile.",
+        //   });
+        // }
+        const usersCollection = await getCollection("users");
+        const userProfile = await usersCollection.findOne({
+          userEmail: userEmailParam,
+        });
+
+        if (!userProfile) {
+          return res.status(404).send({ message: "User profile not found." });
+        }
+
+        res.status(200).send(userProfile);
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+        res.status(500).send({
+          message: "Failed to fetch user profile due to server error!",
+          error: err.message,
+        });
+      }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        router.patch("/update-user-profile/:email", async (req, res) => {
+      try {
+        const updatedData = req.body;
+        const userEmail = req.params.email;
+        // const JWTEmail = req.tokenEmail;
+
+        // if (userEmail !== JWTEmail) {
+        //   return res.status(403).send({
+        //     message: "Forbidden: You can only view your own profile.",
+        //   });
+        // }
+
+        const query = { userEmail: userEmail };
+        const usersCollection = await getCollection('users');
+        const updateDoc = {
+          $set: {}, // Initialize an empty $set object
+        };
+
+        if (updatedData.fullName !== undefined) {
+          updateDoc.$set.userName = updatedData.fullName; // Map frontend 'fullName' to backend 'userName'
+        }
+        if (updatedData.profilePhotoUrl !== undefined) {
+          updateDoc.$set.userPhoto = updatedData.profilePhotoUrl; // Map frontend 'profilePhotoUrl' to backend 'userPhoto'
+        }
+        if (updatedData.phoneNumber !== undefined) {
+          updateDoc.$set.userPhone = updatedData.phoneNumber; // Map frontend 'phoneNumber' to backend 'userPhone'
+        }
+        // Add other personal info fields as needed, e.g., if you have 'gender', 'dob', etc.
+
+        // ********************************************
+        // --- Dynamically add fields for address info ---
+        // if (updatedData.shippingAddress) {
+        //   // Use dot notation to update nested fields
+        //   if (updatedData.shippingAddress.addressLine1 !== undefined) {
+        //     updateDoc.$set["shippingAddress.addressLine1"] =
+        //       updatedData.shippingAddress.addressLine1;
+        //   }
+        //   if (updatedData.shippingAddress.addressLine2 !== undefined) {
+        //     updateDoc.$set["shippingAddress.addressLine2"] =
+        //       updatedData.shippingAddress.addressLine2;
+        //   }
+        //   if (updatedData.shippingAddress.city !== undefined) {
+        //     updateDoc.$set["shippingAddress.city"] =
+        //       updatedData.shippingAddress.city;
+        //   }
+        //   if (updatedData.shippingAddress.stateProvince !== undefined) {
+        //     // Make sure this matches your frontend field name
+        //     updateDoc.$set["shippingAddress.stateProvince"] =
+        //       updatedData.shippingAddress.stateProvince;
+        //   }
+        //   if (updatedData.shippingAddress.zipCode !== undefined) {
+        //     updateDoc.$set["shippingAddress.zipCode"] =
+        //       updatedData.shippingAddress.zipCode;
+        //   }
+        //   if (updatedData.shippingAddress.country !== undefined) {
+        //     updateDoc.$set["shippingAddress.country"] =
+        //       updatedData.shippingAddress.country;
+        //   }
+          // Add other address fields if you add them to the frontend form
+        // }
+
+        const result = await usersCollection.updateOne(query, updateDoc);
+        res.send(result);
+      } catch (error) {
+        res
+          .status(500)
+          .send({ error: "Server error. Please try again later." });
+      }
+    });
+
+
+
+router.patch("/update-user-address/:email", async (req, res) => {
+      try {
+        const updatedData = req.body;
+        const userEmail = req.params.email;
+        // const JWTEmail = req.tokenEmail;
+
+        // if (userEmail !== JWTEmail) {
+        //   return res.status(403).send({
+        //     message: "Forbidden: You can only view your own profile.",
+        //   });
+        // }
+
+        const query = { userEmail: userEmail };
+        const usersCollection = await getCollection('users');
+        const updateDoc = {
+          $set: {}, // Initialize an empty $set object
+        };
+
+        // --- Dynamically add fields for address info ---
+        if (updatedData.shippingAddress) {
+          // Use dot notation to update nested fields
+          if (updatedData.shippingAddress.addressLine1 !== undefined) {
+            updateDoc.$set["shippingAddress.addressLine1"] =
+              updatedData.shippingAddress.addressLine1;
+          }
+          if (updatedData.shippingAddress.addressLine2 !== undefined) {
+            updateDoc.$set["shippingAddress.addressLine2"] =
+              updatedData.shippingAddress.addressLine2;
+          }
+          if (updatedData.shippingAddress.city !== undefined) {
+            updateDoc.$set["shippingAddress.city"] =
+              updatedData.shippingAddress.city;
+          }
+          if (updatedData.shippingAddress.stateProvince !== undefined) {
+            // Make sure this matches your frontend field name
+            updateDoc.$set["shippingAddress.stateProvince"] =
+              updatedData.shippingAddress.stateProvince;
+          }
+          if (updatedData.shippingAddress.zipCode !== undefined) {
+            updateDoc.$set["shippingAddress.zipCode"] =
+              updatedData.shippingAddress.zipCode;
+          }
+          if (updatedData.shippingAddress.country !== undefined) {
+            updateDoc.$set["shippingAddress.country"] =
+              updatedData.shippingAddress.country;
+          }
+          // Add other address fields if you add them to the frontend form
+        }
+
+        const result = await usersCollection.updateOne(query, updateDoc);
+        res.send(result);
+      } catch (error) {
+        res
+          .status(500)
+          .send({ error: "Server error. Please try again later." });
+      }
+    });
+
+export default router;
