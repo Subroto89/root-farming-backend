@@ -6,109 +6,155 @@ const router = express.Router();
 
 // Add Variant API -------------------------------------
 router.post("/save-variant", async (req, res) => {
-    try {
-        const variantData = req.body;
-        const variantCollection = await getCollection("variants");
-        
-        
-        // Check if variant already exists
-        const existingVariant = await variantCollection.findOne({
-            name: variantData.variantName,
-        });
-        if (existingVariant) {
-            return res.status(400).json({ error: "Variant already exists" });
-        }
-        
-        // Insert new variant
-        variantData.createdAt = new Date().toISOString();
-        variantData.updatedAt = new Date().toISOString();
-        variantData.variantStatus = "Active";
-        variantData.productCount = 0;
-        
-        const result = await variantCollection.insertOne(variantData);
-        return res.status(201).json({
-            message: "Variant created successfully",
-            insertedId: result.insertedId,
-        });
-        
-  } catch (error) {
-    console.error("Error saving variant:", error);
-    res.status(500).json({ error: "Failed to save variant" });
-  }
-});
+   try {
+      const variantData = req.body;
+      const variantCollection = await getCollection("variants");
 
+      // Check if variant already exists
+      const existingVariant = await variantCollection.findOne({
+         name: variantData.variantName,
+      });
+      if (existingVariant) {
+         return res.status(400).json({ error: "Variant already exists" });
+      }
+
+      // Insert new variant
+      variantData.createdAt = new Date().toISOString();
+      variantData.updatedAt = new Date().toISOString();
+      variantData.variantStatus = "Active";
+      variantData.productCount = 0;
+
+      const result = await variantCollection.insertOne(variantData);
+      return res.status(201).json({
+         message: "Variant created successfully",
+         insertedId: result.insertedId,
+      });
+   } catch (error) {
+      console.error("Error saving variant:", error);
+      res.status(500).json({ error: "Failed to save variant" });
+   }
+});
 
 // GET All Types API
 
 router.get("/get-variants", async (req, res) => {
-  try {
-    const variantCollection = await getCollection("variants");
-    const variants = await variantCollection.find({}).toArray();
-    res.status(200).json(variants);
-  } catch (error) {
-    console.error("Error fetching variants:", error);
-    res.status(500).json({ error: "Failed to fetch variants" });
-  }
+   try {
+      const variantCollection = await getCollection("variants");
+      const variants = await variantCollection.find({}).toArray();
+      res.status(200).json(variants);
+   } catch (error) {
+      console.error("Error fetching variants:", error);
+      res.status(500).json({ error: "Failed to fetch variants" });
+   }
 });
 
+// ---------------- Get Sub-Category ----------------------
 
-// Update Variant API
- router.patch("/update-variant/:id", async (req, res) => {
+router.get("/get-variant/:id", async (req, res) => {
+   try {
       const variantId = req.params.id;
 
-      const { variantName, variantPhoto, variantStatus } = req.body;
+      const variantsCollection = await getCollection("variants");
 
-      const updateFields = {};
-      if (variantName !== undefined) {
-        updateFields.variantName = variantName;
+      const variant = await variantsCollection.findOne({
+         _id: new ObjectId(variantId),
+      });
+      if (!variant) {
+         return res.status(404).json({ message: "Variant not found." });
       }
-      if (variantPhoto !== undefined) {
-        updateFields.variantPhoto = variantPhoto;
-      }
-      if (variantStatus !== undefined) {
-        const allowedStatuses = ["active", "inactive"];
-        if (!allowedStatuses.includes(variantStatus)) {
-          return res.status(400).json({
-            message: `Invalid status value. Must be one of: ${allowedStatuses.join(
-              ", "
-            )}`,
-          });
-        }
-        updateFields.variantstatus = variantStatus;
-      }
+      // Success response
+      res.status(200).send(variant);
+   } catch (err) {
+      console.error("Error fetching variant:", err);
+      res.status(500).json({ message: "Failed to fetch variant" });
+   }
+});
 
-      updateFields.updatedAt = new Date().toISOString();
+// GET variants by subCategoryId
+router.get("/get-by-subcategory/:subCategoryId", async (req, res) => {
+   try {
+      const { subCategoryId } = req.params;
+      const variantCollection = await getCollection("variants");
+
+      const orConditions = [
+         { subCategoryId: subCategoryId }, // string
+         { subCategory: subCategoryId }, // alternate field
+      ];
 
       try {
-        const variantCollection = await getCollection("variants");
-        const result = await variantCollection.updateOne(
-          { _id: new ObjectId(variantId) },
-          { $set: updateFields }
-        );
-        res.send(result);
-      } catch (error) {
-        console.error("Error updating variant:", error);
-        res.status(500).json({
-          message: "Server error during variant update.",
-          error: error.message,
-        });
+         const oid = new ObjectId(subCategoryId);
+         orConditions.push({ subCategoryId: oid }, { "subCategory._id": oid });
+      } catch (err) {}
+
+      const variants = await variantCollection
+         .find({ $or: orConditions })
+         .toArray();
+      res.status(200).json(variants);
+   } catch (error) {
+      console.error("Error fetching variants by sub-category:", error);
+      res.status(500).json({
+         error: "Failed to fetch variants for the given sub-category",
+      });
+   }
+});
+
+// Update Variant API
+router.patch("/update-variant/:id", async (req, res) => {
+   const variantId = req.params.id;
+
+   const { variantName, variantPhoto, variantStatus } = req.body;
+
+   const updateFields = {};
+   if (variantName !== undefined) {
+      updateFields.variantName = variantName;
+   }
+   if (variantPhoto !== undefined) {
+      updateFields.variantPhoto = variantPhoto;
+   }
+   if (variantStatus !== undefined) {
+      const allowedStatuses = ["active", "inactive"];
+      if (!allowedStatuses.includes(variantStatus)) {
+         return res.status(400).json({
+            message: `Invalid status value. Must be one of: ${allowedStatuses.join(
+               ", "
+            )}`,
+         });
       }
-    });
+      updateFields.variantstatus = variantStatus;
+   }
+
+   updateFields.updatedAt = new Date().toISOString();
+
+   try {
+      const variantCollection = await getCollection("variants");
+      const result = await variantCollection.updateOne(
+         { _id: new ObjectId(variantId) },
+         { $set: updateFields }
+      );
+      res.send(result);
+   } catch (error) {
+      console.error("Error updating variant:", error);
+      res.status(500).json({
+         message: "Server error during variant update.",
+         error: error.message,
+      });
+   }
+});
 
 // Delete Variant API
-    router.delete("/delete-variant/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
-        const query = { _id: new ObjectId(id) };
-        const variantCollection = await getCollection("variants");
-        const result = await variantCollection.deleteOne(query);
-        res.status(200).send(result);
-      } catch (error) {
-        console.log(error);
-        res
-          .status(500)
-          .send({ message: "Internal Server Error. Please try again later." });
-      }
-    });
+router.delete("/delete-variant/:id", async (req, res) => {
+   try {
+      const { id } = req.params;
+      const query = { _id: new ObjectId(id) };
+      const variantCollection = await getCollection("variants");
+      const result = await variantCollection.deleteOne(query);
+      res.status(200).send(result);
+   } catch (error) {
+      console.log(error);
+      res.status(500).send({
+         message: "Internal Server Error. Please try again later.",
+      });
+   }
+});
 
 export default router;
