@@ -19,13 +19,15 @@ router.get("/", async (req, res) => {
     try {
         const guidesCollection = await getCollection("guides");
         const role = req.query.role;
-        const query = role ? { role } : {};
+        const query = role ? { role: role } : {};
         const guides = await guidesCollection.find(query).toArray();
         res.status(200).json(guides);
     } catch (error) {
         res.status(500).json({ message: "Failed to get guides", error });
     }
 });
+
+
 
 // UPDATE Guide
 router.put("/:id", async (req, res) => {
