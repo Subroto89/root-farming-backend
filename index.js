@@ -55,13 +55,14 @@ app.use(express.urlencoded({ extended: true }));
 // CORS config
 app.use(
    cors({
-      origin: [
-         "http://localhost:5173",
-         "http://localhost:5174",
-         "https://root-farming.web.app",
-         "https://elegant-buttercream-cd3400.netlify.app",
-         "https://root-farming-bb736.web.app",
-      ],
+      origin: "*",
+      //  [
+      //    "http://localhost:5173",
+      //    "http://localhost:5174",
+         
+      //    "https://elegant-buttercream-cd3400.netlify.app",
+      //    "https://root-farming-bb736.web.app",
+      // ],
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization", "x-custom-header"],
@@ -109,13 +110,15 @@ app.use('/becomePartners', becomePartners)
 const server = http.createServer(app);
 const io = new Server(server, {
    cors: {
-      origin: [
-         "http://localhost:5173",
-         "http://localhost:5174",
-         "https://elegant-buttercream-cd3400.netlify.app",
-         "https://root-farming-bb736.web.app",
-      ],
+      origin: "*" ,
+      //  [
+      //    "http://localhost:5173",
+      //    "http://localhost:5174",
+      //    "https://elegant-buttercream-cd3400.netlify.app",
+      //    "https://root-farming-bb736.web.app",
+      // ],
       credentials: true,
+
       methods: ["GET", "POST"],
    },
 });
