@@ -37,14 +37,6 @@ import farmerFieldsRoutes from './routes/farmerFieldsRoutes.js';
 import becomePartners from "./routes/becomePartners.js"
 
 
-<<<<<<< HEAD
-
-
-
-
-
-=======
->>>>>>> 7376f270678045a791e34f2ba299f15d2132d184
 // chat related....
 import chatRoutes from './routes/chatRoutes.js'; // add chat routes
 import productsManageRoutes from './routes/productsManageRoutes.js';
