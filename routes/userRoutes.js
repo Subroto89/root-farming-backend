@@ -360,12 +360,4 @@ router.patch("/update-user-address/:email", async (req, res) => {
       }
     });
 
-
-
-
-
-
-
-
-
-    export default router;
+export default router;
