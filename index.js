@@ -34,6 +34,7 @@ import variantRoutes from "./routes/variantRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import farmerFieldsRoutes from "./routes/farmerFieldsRoutes.js";
+import instruction from "./routes/instructionsRoute.js";
 
 // chat related....
 import chatRoutes from "./routes/chatRoutes.js"; // add chat routes
@@ -61,7 +62,6 @@ app.use(
       allowedHeaders: ["Content-Type", "Authorization", "x-custom-header"],
    })
 );
-
 
 // AI-Initialize the Gemini client using the key from .env
 // const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -94,6 +94,7 @@ app.use("/variants", variantRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/wishlist", wishlistRoutes);
 app.use("/farmerfields", farmerFieldsRoutes);
+app.use("/instructions", instruction);
 
 // Create HTTP server and attach socket.io
 const server = http.createServer(app);

@@ -5,7 +5,7 @@ const { verifySpecialist } = require("../middleware/verifySpecialist");
 const Instruction = require("../models/instruction.model");
 
 // Get all published instructions
-router.get("/instructions", verifyJWT, async (req, res) => {
+router.get("/", verifyJWT, async (req, res) => {
    try {
       const { categoryId, variantId, status = "published" } = req.query;
       const query = { status };
@@ -26,7 +26,7 @@ router.get("/instructions", verifyJWT, async (req, res) => {
 });
 
 // Get instruction by ID
-router.get("/instructions/:id", verifyJWT, async (req, res) => {
+router.get("/:id", verifyJWT, async (req, res) => {
    try {
       const instruction = await Instruction.findById(req.params.id)
          .populate("categoryId")
@@ -43,7 +43,7 @@ router.get("/instructions/:id", verifyJWT, async (req, res) => {
 });
 
 // Create new instruction (Specialist only)
-router.post("/instructions", verifyJWT, verifySpecialist, async (req, res) => {
+router.post("/", verifyJWT, verifySpecialist, async (req, res) => {
    try {
       const instruction = new Instruction({
          ...req.body,
@@ -57,53 +57,43 @@ router.post("/instructions", verifyJWT, verifySpecialist, async (req, res) => {
 });
 
 // Update instruction (Specialist only)
-router.put(
-   "/instructions/:id",
-   verifyJWT,
-   verifySpecialist,
-   async (req, res) => {
-      try {
-         const instruction = await Instruction.findOneAndUpdate(
-            { _id: req.params.id, authorId: req.user.uid },
-            req.body,
-            { new: true }
-         );
+router.put("/:id", verifyJWT, verifySpecialist, async (req, res) => {
+   try {
+      const instruction = await Instruction.findOneAndUpdate(
+         { _id: req.params.id, authorId: req.user.uid },
+         req.body,
+         { new: true }
+      );
 
-         if (!instruction) {
-            return res
-               .status(404)
-               .json({ error: "Instruction not found or unauthorized" });
-         }
-         res.json(instruction);
-      } catch (error) {
-         res.status(400).json({ error: error.message });
+      if (!instruction) {
+         return res
+            .status(404)
+            .json({ error: "Instruction not found or unauthorized" });
       }
+      res.json(instruction);
+   } catch (error) {
+      res.status(400).json({ error: error.message });
    }
-);
+});
 
 // Delete instruction (Specialist only)
-router.delete(
-   "/instructions/:id",
-   verifyJWT,
-   verifySpecialist,
-   async (req, res) => {
-      try {
-         const instruction = await Instruction.findOneAndDelete({
-            _id: req.params.id,
-            authorId: req.user.uid,
-         });
+router.delete("/:id", verifyJWT, verifySpecialist, async (req, res) => {
+   try {
+      const instruction = await Instruction.findOneAndDelete({
+         _id: req.params.id,
+         authorId: req.user.uid,
+      });
 
-         if (!instruction) {
-            return res
-               .status(404)
-               .json({ error: "Instruction not found or unauthorized" });
-         }
-         res.status(204).send();
-      } catch (error) {
-         res.status(500).json({ error: error.message });
+      if (!instruction) {
+         return res
+            .status(404)
+            .json({ error: "Instruction not found or unauthorized" });
       }
+      res.status(204).send();
+   } catch (error) {
+      res.status(500).json({ error: error.message });
    }
-);
+});
 
 // Get all instructions by author (Specialist only)
 router.get(
