@@ -52,6 +52,30 @@ router.get("/get-variants", async (req, res) => {
 });
 
 
+// ---------------- Get Sub-Category ----------------------
+
+  router.get('/get-variant/:id', async (req, res) => {
+  try {
+    const variantId = req.params.id;
+    
+    const variantsCollection = await getCollection('variants');
+    
+    const variant = await variantsCollection.findOne({
+      _id: new ObjectId(variantId)
+    }); 
+    if (!variant) {
+      return res.status(404).json({ message: 'Variant not found.' });
+    }
+    // Success response
+    res.status(200).send(variant);
+
+  } catch (err) {
+    console.error('Error fetching variant:', err);
+    res.status(500).json({ message: 'Failed to fetch variant' });
+  }
+});
+
+
 // Update Variant API
  router.patch("/update-variant/:id", async (req, res) => {
       const variantId = req.params.id;

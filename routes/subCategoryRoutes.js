@@ -47,6 +47,29 @@ router.get("/get-subCategories", async (req, res) => {
   }
 });
 
+// ---------------- Get Sub-Category ----------------------
+
+  router.get('/get-subCategory/:id', async (req, res) => {
+  try {
+    const subCategoryId = req.params.id;
+    
+    const subCategoriesCollection = await getCollection('subCategories');
+    
+    const subCategory = await subCategoriesCollection.findOne({
+      _id: new ObjectId(subCategoryId)
+    }); 
+    if (!subCategory) {
+      return res.status(404).json({ message: 'Sub-Category not found.' });
+    }
+    // Success response
+    res.status(200).send(subCategory);
+
+  } catch (err) {
+    console.error('Error fetching sub-Category:', err);
+    res.status(500).json({ message: 'Failed to fetch sub-Category' });
+  }
+});
+
 // Update Sub-Category Route
 router.patch("/update-subCategories/:id", async (req, res) => {
   const subCategoryId = req.params.id;
