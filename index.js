@@ -10,7 +10,7 @@ import { Server } from "socket.io";
 // import { GoogleGenAI } from '@google/genai';
 
 // middlewares (HTTP + Socket)
-import { verifySocketAuth } from './middleware/verifySocketAuth.js';
+import { verifySocketAuth } from "./middleware/verifySocketAuth.js";
 
 // chat socket handler
 import registerSocketHandlers from "./socket/chatHandler.js";
@@ -60,6 +60,7 @@ app.use(
          "http://localhost:5174",
          "https://root-farming.web.app",
          "https://elegant-buttercream-cd3400.netlify.app",
+         "https://root-farming-bb736.web.app",
       ],
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -67,13 +68,12 @@ app.use(
    })
 );
 
-
 // AI-Initialize the Gemini client using the key from .env
 // const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // Health check route
-app.get('/', (req, res) => {
-  res.send('Root Farming Is Alive!');
+app.get("/", (req, res) => {
+   res.send("Root Farming Is Alive!");
 });
 
 // mount chat routes (protected routes inside will use verifyFirebaseToken)
@@ -113,6 +113,7 @@ const io = new Server(server, {
          "http://localhost:5173",
          "http://localhost:5174",
          "https://elegant-buttercream-cd3400.netlify.app",
+         "https://root-farming-bb736.web.app",
       ],
       credentials: true,
       methods: ["GET", "POST"],
