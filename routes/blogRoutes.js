@@ -4,12 +4,30 @@ import { getCollection } from '../config/db.js';
 
 const router = express.Router();
 
-// GET all blogs
+// GET all blogs (with pagination)
 router.get('/', async (req, res) => {
   try {
     const collection = await getCollection('blogs');
-    const blogs = await collection.find().sort({ _id: -1 }).toArray();
-    res.json(blogs);
+
+    // ------------------ Pagination ------------------
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
+    const skip = (page - 1) * limit;
+
+    const totalBlogs = await collection.countDocuments();
+    const blogs = await collection
+      .find()
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    res.json({
+      blogs,
+      currentPage: page,
+      totalPages: Math.ceil(totalBlogs / limit),
+      totalBlogs,
+    });
   } catch (err) {
     console.error(err);
     res
@@ -91,6 +109,7 @@ router.put('/:id', async (req, res) => {
       .json({ message: 'Failed to update blog', error: err.message });
   }
 });
+
 // DELETE blog
 router.delete('/:id', async (req, res) => {
   try {
@@ -115,4 +134,5 @@ router.delete('/:id', async (req, res) => {
       .json({ message: 'Failed to delete blog', error: err.message });
   }
 });
+
 export default router;
